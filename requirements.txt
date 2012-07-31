@@ -1,0 +1,4 @@
+gevent
+crontab
+requests
+MySQLdb
