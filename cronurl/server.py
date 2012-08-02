@@ -24,7 +24,7 @@ def scheduled_urls():
             yield 'http://%(domain)s%(script)s' % row, row['lifetime'], row['mailto']
     connection.close()
 
-def email(mailto, subject, body):
+def email(mailto, subject, body=''):
     message = MIMEText(body)
     message['From'] = 'cron@tele3.cz'
     message['To'] = mailto or 'jbar@tele3.cz'
@@ -36,7 +36,7 @@ def email(mailto, subject, body):
 def check_url(url, timeout, mailto):
     result = None
     try:
-        with Timeout(timeout, False):
+q        with Timeout(timeout, False):
             result = urllib2.urlopen(url).read()
         if result is None:
             logging.warning('%s timed out after %d seconds', url, timeout)
@@ -46,10 +46,10 @@ def check_url(url, timeout, mailto):
             email(mailto, '[CRON] %s' % url, result)
     except urllib2.HTTPError, e:
         logging.error('%s returned %s', url, e.code)
-        email(mailto, '[CRON] %s returned %s', url, e.code)
+        email(mailto, '[CRON] %s returned %s' % (url, e.code))
     except urllib2.URLError, e:
         logging.error('%s failed: %s', url, e.reason)
-        email(mailto, '[CRON] %s failed: %s', url, e.reason)
+        email(mailto, '[CRON] %s failed: %s' % (url, e.reason))
     except Exception, e:
         logging.error('%s fatal: %s', url, e)
                
