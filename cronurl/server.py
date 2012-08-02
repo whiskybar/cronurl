@@ -10,6 +10,7 @@ from email.mime.text import MIMEText
 from eventlet.green import subprocess
 import MySQLdb
 import logging
+import logging.handlers
 from crontab import CronTab
 
 
@@ -57,7 +58,19 @@ def main():
 
     options = parse_arguments()
     if options.debug:
-        logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
+        level = logging.DEBUG
+    else:
+        level = logging.WARNING
+    logging.basicConfig(format='%(asctime)s %(message)s', level=level)
+    rh = logging.handlers.TimedRotatingFileHandler(
+        filename='/var/log/hosting/cronurl.log',
+        when='midnight',
+    )
+    rh.setFormatter(logging.Formatter("%(asctime)s - %(message)s"))
+    rootLogger = logging.getLogger('')
+    rootLogger.removeHandler(rootLogger.handlers[0])
+    rootLogger.setLevel(logging.DEBUG)
+    rootLogger.addHandler(rh)
 
     while True:
         now = time.time()
