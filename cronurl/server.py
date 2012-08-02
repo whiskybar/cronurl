@@ -1,3 +1,4 @@
+import sys
 import time
 import signal
 import argparse
@@ -25,8 +26,8 @@ def scheduled_urls():
 def email(mailto, subject, body):
     message = MIMEText(body)
     message['From'] = 'cron@tele3.cz'
-    msg['To'] = mailto
-    msg['Subject'] = subject
+    message['To'] = mailto
+    message['Subject'] = subject
     process = subprocess.Popen(['/usr/sbin/sendmail', '-t'], stdin=subprocess.subprocess_orig.PIPE)
     process.communicate(message.as_string())
 
@@ -63,7 +64,7 @@ def main():
         next_minute = int(now) / 60 * 60 - now + 61
         for url, timeout, mailto in scheduled_urls():
             eventlet.spawn_after(next_minute, check_url, url, timeout, mailto)
-        return
+        eventlet.sleep(next_minute + 1)
 
 if __name__ == '__main__':
     main()
