@@ -57,7 +57,7 @@ def main():
 
     options = parse_arguments()
     if options.debug:
-        logging.basicConfig(level=logging.DEBUG)
+        logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
 
     while True:
         now = time.time()
