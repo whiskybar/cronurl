@@ -26,7 +26,7 @@ def scheduled_urls():
 def email(mailto, subject, body):
     message = MIMEText(body)
     message['From'] = 'cron@tele3.cz'
-    message['To'] = mailto
+    message['To'] = mailto or jbar@tele3.cz
     message['Subject'] = subject
     process = subprocess.Popen(['/usr/sbin/sendmail', '-t'], stdin=subprocess.subprocess_orig.PIPE)
     process.communicate(message.as_string())
