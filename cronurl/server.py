@@ -35,21 +35,23 @@ def email(mailto, subject, body):
 
 def check_url(url, timeout, mailto):
     result = None
-    with Timeout(timeout, False):
-        try:
+    try:
+        with Timeout(timeout, False):
             result = urllib2.urlopen(url).read()
-        except urllib2.HTTPError, e:
-            logging.error('%s returned %s', url, e.code)
-        except urllib2.URLError, e:
-            logging.error('%s failed: %s', url, e.reason)
-        except Exception, e:
-            logging.error('%s fatal: %s', url, e)
-    logging.debug('%s hit', url)
-    if result is None:
-        logging.warning('%s timed out after %d seconds', url, timeout)
-        email(mailto, '[CRON] %s timed out' % url, '%s timed out after %d seconds' % (url, timeout))
-    else:
-        email(mailto, '[CRON] %s' % url, result)
+        if result is None:
+            logging.warning('%s timed out after %d seconds', url, timeout)
+            email(mailto, '[CRON] %s timed out' % url, '%s timed out after %d seconds' % (url, timeout))
+        else:
+            logging.debug('%s hit', url)
+            email(mailto, '[CRON] %s' % url, result)
+    except urllib2.HTTPError, e:
+        logging.error('%s returned %s', url, e.code)
+        email(mailto, '[CRON] %s returned %s', url, e.code)
+    except urllib2.URLError, e:
+        logging.error('%s failed: %s', url, e.reason)
+        email(mailto, '[CRON] %s failed: %s', url, e.reason)
+    except Exception, e:
+        logging.error('%s fatal: %s', url, e)
                
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Start a cronurl daemon')
