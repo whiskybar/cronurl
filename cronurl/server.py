@@ -36,7 +36,7 @@ def email(mailto, subject, body=''):
 def check_url(url, timeout, mailto):
     result = None
     try:
-q        with Timeout(timeout, False):
+        with Timeout(timeout, False):
             result = urllib2.urlopen(url).read()
         if result is None:
             logging.warning('%s timed out after %d seconds', url, timeout)
