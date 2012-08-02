@@ -38,11 +38,11 @@ def check_url(url, timeout, mailto):
     with Timeout(timeout, False):
         try:
             result = urllib2.urlopen(url).read()
-        except urllib2.HTTPError e:
+        except urllib2.HTTPError, e:
             logging.error('%s returned %s', url, e.code)
-        except urllib2.URLError e:
+        except urllib2.URLError, e:
             logging.error('%s failed: %s', url, e.reason)
-        except Exception e:
+        except Exception, e:
             logging.error('%s fatal: %s', url, e)
     logging.debug('%s hit', url)
     if result is None:
