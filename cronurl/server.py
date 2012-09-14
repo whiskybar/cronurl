@@ -25,7 +25,7 @@ def scheduled_urls():
     connection.close()
 
 def email(mailto, subject, body=''):
-    if not maito:
+    if not mailto:
         return
     message = MIMEText(body)
     message['From'] = 'cron@tele3.cz'
