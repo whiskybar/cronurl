@@ -9,13 +9,17 @@ from eventlet.green import urllib2
 from email.mime.text import MIMEText
 from eventlet.green import subprocess
 import MySQLdb
+from _mysql_exceptions import OperationalError
 import logging
 import logging.handlers
 from crontab import CronTab
 
 
 def scheduled_urls():
-    connection = MySQLdb.connect(read_default_file=os.path.expanduser('~/.my.cnf'), db='hosting')
+    try:
+        connection = MySQLdb.connect(read_default_file=os.path.expanduser('~/.my.cnf'), db='hosting')
+    except OperationalError:
+        return
     cursor = connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM cron')
     for row in cursor:
