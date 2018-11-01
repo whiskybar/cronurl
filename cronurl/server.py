@@ -25,7 +25,7 @@ def scheduled_urls():
     for row in cursor:
         entry = CronTab('%(min)s %(hour)s %(day)s %(month)s %(dayofweek)s' % row)
         if entry.next() < 60:
-            yield 'http://%(domain)s%(script)s' % row, row['lifetime'], row['mailto']
+            yield '%(protocol)s://%(domain)s%(script)s' % row, row['lifetime'], row['mailto']
     connection.close()
 
 def email(mailto, subject, body=''):
@@ -58,12 +58,12 @@ def check_url(url, timeout, mailto):
         email(mailto, '[CRON] %s failed: %s' % (url, e.reason))
     except Exception, e:
         logging.error('%s fatal: %s', url, e)
-               
+
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Start a cronurl daemon')
     parser.add_argument('-d', '--debug', default=False, action='store_true', help='debug mode on')
     return parser.parse_args()
-    
+
 def shutdown(signal, frame):
     sys.exit(0)
 
